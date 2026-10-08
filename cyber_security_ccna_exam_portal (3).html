@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proctored Cyber Security & CCNA Exam Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            950: '#030712',
+                            900: '#0f172a',
+                            800: '#1e293b',
+                            700: '#334155',
+                            accent: '#06b6d4',
+                            emerald: '#10b981',
+                            rose: '#f43f5e',
+                            amber: '#f59e0b'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'Courier New', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030712;
+            color: #f8fafc;
+            user-select: none; /* Prevents selecting text during test */
+            -webkit-user-select: none;
+        }
+
+        .cyber-glow {
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.25);
+        }
+
+        .cyber-glow-red {
+            box-shadow: 0 0 25px rgba(244, 63, 94, 0.4);
+        }
+
+        .cyber-glow-green {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06b6d4;
+        }
+
+        /* Print Styling */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+                user-select: auto !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            .glass-panel {
+                background: white !important;
+                border: 1px solid #ccc !important;
+                color: black !important;
+                box-shadow: none !important;
+            }
+            .text-white, .text-slate-200, .text-slate-300 {
+                color: black !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden relative bg-cyber-950 text-slate-100">
+
+    <header id="main-header" class="sticky top-0 z-40 glass-panel border-b border-slate-800 px-4 lg:px-8 py-3 transition-all duration-300">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 to-emerald-500 flex items-center justify-center text-slate-950 font-bold text-xl shadow-lg shadow-cyan-500/20">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg lg:text-xl tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-emerald-400">
+                        CYBERSEC <span class="text-xs px-2 py-0.5 rounded bg-cyan-950 text-cyan-400 border border-cyan-800 uppercase font-mono">CCNA 200-301</span>
+                    </h1>
+                    <p class="text-xs text-slate-400 hidden sm:block">Proctored Security & Networking Assessment</p>
+                </div>
+            </div>
+
+            <!-- Header Active Test Widgets -->
+            <div id="header-test-widgets" class="hidden flex items-center space-x-3 md:space-x-6">
+                <!-- Strikes Counter Badge -->
+                <div id="strike-badge" class="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-xs font-mono">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-400 animate-pulse"></i>
+                    <span class="text-slate-400">Strikes:</span>
+                    <span id="strike-count" class="font-bold text-emerald-400">0 / 3</span>
+                </div>
+
+                <!-- Live Timer Badge -->
+                <div id="timer-box" class="flex items-center space-x-3 px-4 py-1.5 rounded-xl bg-slate-900/90 border border-cyan-500/30 text-cyan-400 font-mono text-sm md:text-base font-semibold shadow-inner">
+                    <i class="fa-regular fa-clock text-cyan-400"></i>
+                    <span id="timer-display">100:00</span>
+                </div>
+
+                <!-- Drawer Toggle Button (Mobile/Desktop Grid) -->
+                <button onclick="toggleGridDrawer()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 text-sm font-medium flex items-center space-x-2 transition">
+                    <i class="fa-solid fa-th"></i>
+                    <span class="hidden sm:inline">Grid</span>
+                </button>
+
+                <!-- Submit Button -->
+                <button onclick="confirmSubmitExam()" class="px-4 py-1.5 rounded-lg bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-semibold text-sm shadow-md hover:shadow-rose-500/20 transition flex items-center space-x-2">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Submit</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Sticky Header Progress Bar -->
+        <div id="exam-progress-container" class="hidden w-full bg-slate-800 h-1 mt-3 rounded-full overflow-hidden">
+            <div id="exam-progress-bar" class="bg-gradient-to-r from-cyan-500 via-teal-400 to-emerald-400 h-full w-0 transition-all duration-300"></div>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-4 md:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+
+        <!-- ================= 1. STUDENT LOGIN SCREEN ================= -->
+        <section id="login-screen" class="w-full max-w-2xl glass-panel rounded-2xl p-6 md:p-10 border border-slate-800 cyber-glow relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-3xl mb-4">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-white tracking-wide">Proctored Examination Portal</h2>
+                <p class="text-slate-400 text-sm mt-1">Cisco Certified Network Associate & Security Baseline (100 Questions)</p>
+            </div>
+
+            <form id="start-form" onsubmit="handleStartExam(event)" class="space-y-6">
+                <div class="space-y-4">
+                    <div>
+                        <label for="student-name" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+                            Full Candidate Name <span class="text-rose-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                                <i class="fa-solid fa-user"></i>
+                            </span>
+                            <input type="text" id="student-name" required placeholder="e.g. John Doe" 
+                                class="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-900/90 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition font-medium">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="student-id" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2">
+                            Student ID / Roll Number <span class="text-rose-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                                <i class="fa-solid fa-id-card"></i>
+                            </span>
+                            <input type="text" id="student-id" required placeholder="e.g. CCNA-2026-8891" 
+                                class="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-900/90 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition font-mono">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Proctored Rules Alert Box -->
+                <div class="p-4 rounded-xl bg-slate-900/80 border border-amber-500/30 text-xs text-slate-300 space-y-2">
+                    <div class="flex items-center text-amber-400 font-bold text-sm space-x-2">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span>Strict Automated Proctoring Rules</span>
+                    </div>
+                    <ul class="list-disc list-inside space-y-1 text-slate-400">
+                        <li>Exam runs in forced <strong>Fullscreen Mode</strong> (100 Minutes).</li>
+                        <li><strong>Tab Locking Enabled:</strong> Opening new tabs, switching windows, or losing focus triggers a warning strike.</li>
+                        <li>Max <strong>3 Warning Strikes</strong> allowed before <strong>Automatic Test Termination & Submission</strong>.</li>
+                        <li>Right-click, copy-paste, print screen, and developer shortcuts (F12, Ctrl+Shift+I) are completely disabled.</li>
+                    </ul>
+                </div>
+
+                <!-- Agreement Checkbox -->
+                <div class="flex items-start space-x-3 pt-2">
+                    <input type="checkbox" id="terms-agree" required 
+                        class="mt-1 h-4 w-4 rounded bg-slate-900 border-slate-700 text-cyan-500 focus:ring-cyan-500 focus:ring-offset-slate-900 cursor-pointer">
+                    <label for="terms-agree" class="text-xs text-slate-400 cursor-pointer select-none">
+                        I agree to maintain academic integrity, keep full focus on this screen, and acknowledge that breaking proctoring rules will result in immediate auto-submission.
+                    </label>
+                </div>
+
+                <!-- Start Button -->
+                <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 via-teal-500 to-emerald-500 hover:from-cyan-400 hover:to-emerald-400 text-slate-950 font-extrabold text-base tracking-wider uppercase shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 transition transform active:scale-95 flex items-center justify-center space-x-3">
+                    <i class="fa-solid fa-lock-open"></i>
+                    <span>Start Proctored Exam</span>
+                </button>
+            </form>
+        </section>
+
+        <!-- ================= 2. LIVE EXAM INTERFACE ================= -->
+        <section id="exam-screen" class="hidden w-full max-w-7xl flex flex-col lg:flex-row gap-6">
+
+            <!-- Question Main Area -->
+            <div class="flex-grow space-y-6">
+
+                <!-- Question Header Bar -->
+                <div class="glass-panel p-5 rounded-2xl border border-slate-800 flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center space-x-3">
+                        <span id="question-number-badge" class="px-3 py-1 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 font-mono font-bold text-sm">
+                            Question 1 of 100
+                        </span>
+                        <span id="question-category-badge" class="px-3 py-1 rounded-lg bg-slate-800 text-slate-300 font-medium text-xs border border-slate-700">
+                            OSI & TCP/IP Model
+                        </span>
+                    </div>
+
+                    <!-- Action Flags -->
+                    <div class="flex items-center space-x-3">
+                        <button id="flag-btn" onclick="toggleFlagQuestion()" class="px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 text-xs font-semibold flex items-center space-x-2 transition">
+                            <i id="flag-icon" class="fa-regular fa-bookmark text-amber-400"></i>
+                            <span id="flag-text">Flag for Review</span>
+                        </button>
+
+                        <button onclick="clearCurrentAnswer()" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-400 hover:text-rose-400 text-xs font-medium transition">
+                            <i class="fa-solid fa-rotate-left mr-1"></i> Clear Selection
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Question Text Card -->
+                <div class="glass-panel p-6 md:p-8 rounded-2xl border border-slate-800 space-y-6 shadow-xl">
+                    <div id="question-text" class="text-base md:text-lg font-medium text-slate-100 leading-relaxed">
+                        Loading question prompt...
+                    </div>
+
+                    <!-- Multiple Choice Options -->
+                    <div id="options-container" class="space-y-3 pt-2">
+                        <!-- Options generated dynamically -->
+                    </div>
+
+                    <!-- Hint Collapsible Accordion -->
+                    <div class="pt-4 border-t border-slate-800">
+                        <button onclick="toggleHint()" class="flex items-center space-x-2 text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition focus:outline-none">
+                            <i class="fa-solid fa-lightbulb text-amber-400"></i>
+                            <span>Need a Conceptual Hint?</span>
+                            <i id="hint-chevron" class="fa-solid fa-chevron-down text-slate-500 transition-transform duration-200"></i>
+                        </button>
+                        <div id="hint-box" class="hidden mt-3 p-4 rounded-xl bg-slate-900/90 border border-cyan-500/20 text-xs text-cyan-200/90 leading-relaxed font-mono">
+                            <i class="fa-solid fa-circle-info mr-2 text-cyan-400"></i>
+                            <span id="hint-text">Hint explanation will appear here...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Navigation Controls -->
+                <div class="flex items-center justify-between pt-2">
+                    <button id="prev-btn" onclick="navigateQuestion(-1)" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold border border-slate-700 transition flex items-center space-x-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Previous</span>
+                    </button>
+
+                    <div class="text-xs text-slate-500 font-mono hidden sm:block">
+                        Use Grid Drawer to jump to any question
+                    </div>
+
+                    <button id="next-btn" onclick="navigateQuestion(1)" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-400 hover:to-teal-400 text-slate-950 text-sm font-extrabold shadow-md shadow-cyan-500/20 transition flex items-center space-x-2">
+                        <span>Next</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Question Navigation Drawer (1-100 Grid) -->
+            <aside id="grid-drawer" class="w-full lg:w-80 glass-panel p-5 rounded-2xl border border-slate-800 flex-shrink-0 flex flex-col justify-between h-auto max-h-[80vh] lg:max-h-none overflow-y-auto">
+                <div>
+                    <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-4">
+                        <h3 class="font-bold text-sm uppercase tracking-wider text-slate-300 flex items-center space-x-2">
+                            <i class="fa-solid fa-border-all text-cyan-400"></i>
+                            <span>Question Map</span>
+                        </h3>
+                        <span id="answered-stat-counter" class="text-xs font-mono text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded border border-emerald-800">
+                            0 / 100 Answered
+                        </span>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="grid grid-cols-2 gap-2 text-xs text-slate-400 mb-4 font-mono">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-slate-800 border border-slate-600"></span>
+                            <span>Unanswered</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+                            <span>Answered</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+                            <span>Flagged</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full bg-cyan-400"></span>
+                            <span>Current</span>
+                        </div>
+                    </div>
+
+                    <!-- 100 Questions Grid Container -->
+                    <div id="questions-grid" class="grid grid-cols-5 sm:grid-cols-10 lg:grid-cols-5 gap-2 max-h-96 lg:max-h-[500px] overflow-y-auto p-1">
+                        <!-- Buttons 1 to 100 generated in JS -->
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-800 mt-4">
+                    <button onclick="confirmSubmitExam()" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-rose-900/40 hover:text-rose-300 border border-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider transition flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-check-circle"></i>
+                        <span>Finish & Submit Exam</span>
+                    </button>
+                </div>
+            </aside>
+
+        </section>
+
+        <!-- ================= 3. RESULTS & ANALYTICS DASHBOARD ================= -->
+        <section id="results-screen" class="hidden w-full max-w-5xl glass-panel p-6 md:p-10 rounded-2xl border border-slate-800 space-y-8 cyber-glow my-6">
+
+            <!-- Title & Printable Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+                <div>
+                    <div class="flex items-center space-x-3 mb-1">
+                        <h2 class="text-2xl md:text-3xl font-extrabold text-white">Performance Analytics</h2>
+                        <span id="pass-fail-badge" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
+                            PASS
+                        </span>
+                    </div>
+                    <p class="text-xs text-slate-400 font-mono">
+                        Candidate: <span id="res-student-name" class="text-slate-200 font-bold">--</span> | 
+                        ID: <span id="res-student-id" class="text-slate-200">--</span> | 
+                        Date: <span id="res-exam-date" class="text-slate-200">--</span>
+                    </p>
+                </div>
+
+                <!-- Printable controls -->
+                <div class="no-print flex items-center space-x-3">
+                    <button onclick="window.print()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 text-xs font-bold flex items-center space-x-2 transition">
+                        <i class="fa-solid fa-print"></i>
+                        <span>Print Report / Save PDF</span>
+                    </button>
+                    <button onclick="retakeExamCleanly()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-500 text-slate-950 text-xs font-extrabold flex items-center space-x-2 transition shadow-md">
+                        <i class="fa-solid fa-rotate-right"></i>
+                        <span>Retake Exam</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Score Cards Overview -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 text-center">
+                    <p class="text-xs uppercase font-mono text-slate-400 mb-1">Final Score</p>
+                    <p id="res-score-percentage" class="text-3xl md:text-4xl font-extrabold text-cyan-400 font-mono">0%</p>
+                    <p id="res-score-fraction" class="text-xs text-slate-500 mt-1">0 / 100 Marks</p>
+                </div>
+
+                <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 text-center">
+                    <p class="text-xs uppercase font-mono text-slate-400 mb-1">Correct Answers</p>
+                    <p id="res-correct-count" class="text-3xl md:text-4xl font-extrabold text-emerald-400 font-mono">0</p>
+                    <p class="text-xs text-emerald-500/80 mt-1">Accurate Answers</p>
+                </div>
+
+                <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 text-center">
+                    <p class="text-xs uppercase font-mono text-slate-400 mb-1">Incorrect Answers</p>
+                    <p id="res-incorrect-count" class="text-3xl md:text-4xl font-extrabold text-rose-400 font-mono">0</p>
+                    <p class="text-xs text-rose-500/80 mt-1">Mistakes</p>
+                </div>
+
+                <div class="p-5 rounded-2xl bg-slate-900/90 border border-slate-800 text-center">
+                    <p class="text-xs uppercase font-mono text-slate-400 mb-1">Unanswered</p>
+                    <p id="res-unanswered-count" class="text-3xl md:text-4xl font-extrabold text-amber-400 font-mono">0</p>
+                    <p class="text-xs text-amber-500/80 mt-1">Skipped Questions</p>
+                </div>
+            </div>
+
+            <!-- Domain Performance Breakdown -->
+            <div class="space-y-4 pt-2">
+                <h3 class="text-base font-bold uppercase tracking-wider text-slate-200 flex items-center space-x-2">
+                    <i class="fa-solid fa-chart-pie text-cyan-400"></i>
+                    <span>CCNA Domain Knowledge Breakdown</span>
+                </h3>
+                <div id="domain-breakdown-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Domain bars inserted by JS -->
+                </div>
+            </div>
+
+            <!-- Detailed Question Review Section -->
+            <div class="space-y-4 pt-4 border-t border-slate-800">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <h3 class="text-base font-bold uppercase tracking-wider text-slate-200 flex items-center space-x-2">
+                        <i class="fa-solid fa-list-check text-cyan-400"></i>
+                        <span>Detailed Answer Key & Explanations</span>
+                    </h3>
+
+                    <!-- Filter buttons -->
+                    <div class="no-print inline-flex rounded-lg bg-slate-900 p-1 border border-slate-800 text-xs">
+                        <button onclick="filterReview('all')" id="filter-all" class="px-3 py-1 rounded-md bg-cyan-500 text-slate-950 font-bold transition">All</button>
+                        <button onclick="filterReview('correct')" id="filter-correct" class="px-3 py-1 rounded-md text-slate-400 hover:text-slate-200 transition">Correct</button>
+                        <button onclick="filterReview('incorrect')" id="filter-incorrect" class="px-3 py-1 rounded-md text-slate-400 hover:text-slate-200 transition">Incorrect</button>
+                        <button onclick="filterReview('skipped')" id="filter-skipped" class="px-3 py-1 rounded-md text-slate-400 hover:text-slate-200 transition">Skipped</button>
+                    </div>
+                </div>
+
+                <!-- Review list container -->
+                <div id="review-list-container" class="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+                    <!-- Questions review cards generated in JS -->
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- ================= 4. ANTI-CHEATING WARNING MODAL ================= -->
+    <div id="warning-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md">
+        <div class="max-w-md w-full glass-panel rounded-2xl p-6 border border-rose-500/50 cyber-glow-red text-center space-y-5 animate-bounce-short">
+            <div class="w-16 h-16 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-500 flex items-center justify-center text-3xl mx-auto">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+
+            <div>
+                <span id="modal-strike-tag" class="px-3 py-1 rounded-full bg-rose-950 text-rose-400 font-mono font-bold text-xs uppercase border border-rose-800">
+                    WARNING STRIKE 1 / 3
+                </span>
+                <h3 id="modal-title" class="text-xl font-extrabold text-white mt-3">Proctoring Violation Detected!</h3>
+                <p id="modal-message" class="text-xs text-slate-300 mt-2 leading-relaxed">
+                    You attempted to switch tabs, open a new window, or lose window focus. Switching away from the test environment is strictly prohibited!
+                </p>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono text-slate-400">
+                Notice: Reaching <strong class="text-rose-400">3 Strikes</strong> will result in immediate automatic submission of your exam!
+            </div>
+
+            <button id="modal-action-btn" onclick="acknowledgeWarning()" class="w-full py-3 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white font-bold text-sm tracking-wide shadow-lg shadow-rose-600/30 transition">
+                I Understand & Resume Test
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= 5. CONFIRM SUBMISSION MODAL ================= -->
+    <div id="confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md">
+        <div class="max-w-md w-full glass-panel rounded-2xl p-6 border border-slate-700 text-center space-y-5">
+            <div class="w-14 h-14 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 flex items-center justify-center text-2xl mx-auto">
+                <i class="fa-solid fa-circle-question"></i>
+            </div>
+
+            <div>
+                <h3 class="text-xl font-extrabold text-white">Submit Examination?</h3>
+                <p class="text-xs text-slate-400 mt-2">
+                    Are you sure you want to finalize and submit your test?
+                </p>
+            </div>
+
+            <div id="confirm-stats-box" class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono grid grid-cols-2 gap-2 text-slate-300">
+                <div>Answered: <span id="confirm-answered" class="text-emerald-400 font-bold">0</span></div>
+                <div>Unanswered: <span id="confirm-unanswered" class="text-amber-400 font-bold">0</span></div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <button onclick="closeConfirmModal()" class="w-1/2 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs transition">
+                    Continue Exam
+                </button>
+                <button onclick="submitExamNow()" class="w-1/2 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-extrabold text-xs transition shadow-md shadow-emerald-500/20">
+                    Yes, Submit Now
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="no-print text-center py-4 text-xs text-slate-600 border-t border-slate-900">
+        Proctored Cyber Security Portal &copy; 2026 | CCNA 200-301 Certification Exam Engine
+    </footer>
+
+    <!-- JS Logic -->
+    <script>
+        
+        // 100 Comprehensive Questions across 6 Core CCNA / Cyber Security Domains
+        const questionsData = [
+            // Domain 1: OSI & TCP/IP Model (15 Questions)
+            {
+                category: "OSI & TCP/IP Model",
+                question: "Which layer of the OSI model is responsible for end-to-end flow control, segmentation, and error recovery using sequence numbers?",
+                options: ["Data Link Layer (Layer 2)", "Network Layer (Layer 3)", "Transport Layer (Layer 4)", "Session Layer (Layer 5)"],
+                correct: 2,
+                hint: "TCP operates at this layer to guarantee reliable delivery using SYN, ACK, and sequence numbers.",
+                explanation: "The Transport Layer (Layer 4) handles segmentation, flow control (windowing), and error recovery via TCP or connectionless delivery via UDP."
+            },
+            {
+                category: "OSI & TCP/IP Model",
+                question: "What is the Protocol Data Unit (PDU) name at Layer 2 (Data Link Layer) of the OSI model?",
+                options: ["Bit", "Frame", "Packet", "Segment"],
+                correct: 1,
+                hint: "Switches inspect destination MAC addresses encapsulated inside this unit.",
+                explanation: "The PDU at Layer 2 is called a Frame. Layer 1 uses Bits, Layer 3 uses Packets, and Layer 4 uses Segments."
+            },
+            {
+                category: "OSI & TCP/IP Model",
+                question: "Which TCP/IP model layer corresponds to the combined OSI Application, Presentation, and Session layers?",
+                options: ["Network Access Layer", "Internet Layer", "Transport Layer", "Application Layer"],
+                correct: 3,
+                hint: "The simplified 4-layer TCP/IP model aggregates all upper-level user protocols into a single top layer.",
+                explanation: "The TCP/IP Application layer encompasses OSI Layers 5, 6, and 7 (Session, Presentation, Application)."
+            },
+            {
+                category: "OSI & TCP/IP Model",
+                question: "Which port number is utilized by HTTPS for secure web transactions encrypted via TLS/SSL?",
+                options: ["Port 80", "Port 443", "Port 22", "Port 8080"],
+                correct: 1,
+                hint: "Standard unencrypted HTTP uses 80; secure encrypted traffic uses this default port.",
+                explanation: "HTTPS uses TCP port 443. HTTP uses 80, SSH uses 22, and 8080 is an alternative proxy/HTTP port."
+            },
+            {
+                category: "OSI & TCP/IP Model",
+                question: "During encapsulation, in what order are headers added to payload data as it traverses down the OSI stack?",
+                options: [
+                    "Data -> Segment -> Packet -> Frame -> Bits",
+                    "Bits -> Frame -> Packet -> Segment -> Data",
+                    "Packet -> Frame -> Segment -> Bits -> Data",
+                    "Data -> Frame -> Segment -> Packet -> Bits"
+                ],
+                correct: 0,
+                hint: "Encapsulation works top-down from Application data down to Physical bits.",
+                explanation: "Data from top layers is encapsulated into Transport Segments, then Network Packets, then Data Link Frames, and finally sent as Physical Bits."
+            },
+            {
+                category: "OSI & TCP/IP Model",
+                question: "Which protocol operates at Layer 3 to resolve a known IPv4 address to its associated hardware MAC address?",
+                options: ["DNS", "DHCP", "ARP", "ICMP"],
+                correct: 2,
+                hint: "Switches and routers send broadcast requests asking 'Who has this IP?' using this protocol.",
+                explanation: "Address Resolution Protocol (ARP) maps a known Layer 3 IP address to a Layer 2 MAC address."
+            },
+            {
+                category: "OSI & TCP/IP Model",
+                question: "What flag pair is used during the standard 3-way TCP handshake process to establish a reliable connection?",
+                options: ["SYN, SYN-ACK, ACK", "FIN, ACK, RST", "PUSH, URG, ACK", "SYN, FIN, ACK"],
+                correct: 0,
+                hint: "Sender initiates with Synchronize, receiver responds with Synchronize-Acknowledge.",
+                explanation: "The TCP 3-way handshake sequence is SYN -> SYN-ACK -> ACK."
+            },
+            {
+                category: "OSI & TCP/IP Model",
+                question: "Which layer of the OSI model handles data formatting, compression, and encryption/decryption?",
+                options: ["Presentation Layer (Layer 6)", "Session Layer (Layer 5)", "Application Layer (Layer 7)", "Transport Layer (Layer 4)"],
+                correct: 0,
+                hint: "Formats like JPEG, ASCII, and TLS encryption structures operate at this layer.",
+                explanation: "Layer 6 (Presentation) ensures that data is in a readable format, handling encryption, compression, and syntax conversion."
+            },
+            {
+                category: "OSI & TCP/IP Model",
+                question: "Which transport protocol is connectionless and low-latency, making it ideal for real-time voice (VoIP) and video streaming?",
+                options: ["TCP", "UDP", "SCTP", "ICMP"],
+                correct: 1,
+                hint: "It does not guarantee packet arrival or sequence ordering.",
+                explanation: "UDP (User Datagram Protocol) is lightweight and connectionless, prioritized for real-time traffic like VoIP and streaming."
+            },
+            {
+                category: "OSI & TCP/IP Model",
+                question: "What ICMP message type is returned by a router when a packet's TTL (Time To Live) reaches zero?",
+                options: ["Echo Reply", "Time Exceeded", "Destination Unreachable", "Redirect"],
+                correct: 1,
+                hint: "Traceroute uses this ICMP response to map hop-by-hop pathways.",
+                explanation: "When TTL decrements to 0, the router drops the packet and transmits an ICMP Type 11 'Time Exceeded' message back to the source."
+            },
+            {
+                category: "OSI & TCP/IP Model",
+                question: "Which utility sends ICMP Echo Request messages to verify basic Layer 3 connectivity?",
+                options: ["nslookup", "netstat", "ping", "traceroute"],
+                correct: 2,
+                hint: "It tests basic reachability to a remote IP address.",
+                explanation: "The `ping` command sends ICMP Echo Requests (Type 8) and waits for ICMP Echo Replies (Type 0)."
+            },
+            {
+                category: "OSI & TCP/IP Model",
+                question: "What port number is used by SNMP (Simple Network Management Protocol) for polling trap events?",
+                options: ["UDP 161 / 162", "TCP 23", "UDP 67 / 68", "TCP 110"],
+                correct: 0,
+                hint: "Network monitoring software uses UDP ports 161 for requests and 162 for traps.",
+                explanation: "SNMP uses UDP port 161 for queries and UDP port 162 for asynchronous Trap/Informed messages."
+            },
+            {
+                category: "OSI & TCP/IP Model",
+                question: "Which field in an IPv4 header prevents a packet from endlessly looping on a network?",
+                options: ["Differentiated Services", "Header Checksum", "Time to Live (TTL)", "Identification"],
+                correct: 2,
+                hint: "Each router hop decrements this value by 1.",
+                explanation: "The TTL field is decremented by 1 at each router. If it reaches 0, the packet is discarded, preventing routing loops."
+            },
+            {
+                category: "OSI & TCP/IP Model",
+                question: "Which service operates on UDP port 53 to map human-readable domain names to IPv4/IPv6 addresses?",
+                options: ["DHCP", "DNS", "FTP", "TFTP"],
+                correct: 1,
+                hint: "Domain Name System resolves names like example.com.",
+                explanation: "DNS operates primarily over UDP port 53 to resolve domain names into numerical IP addresses."
+            },
+            {
+                category: "OSI & TCP/IP Model",
+                question: "What is the primary function of the Data Link Layer (Layer 2) LLC (Logical Link Control) sublayer?",
+                options: [
+                    "To interface with upper network layer protocols and manage error control",
+                    "To control physical media access MAC addresses",
+                    "To generate electrical pulses across copper wire",
+                    "To perform IP routing lookup"
+                ],
+                correct: 0,
+                hint: "IEEE 802.2 defines this sublayer above MAC (802.3).",
+                explanation: "The LLC sublayer (802.2) provides an interface between the upper network layer protocols and the underlying MAC sublayer."
+            }
+        ];
+
+        // Generate remaining 85 questions across Subnetting, Switching, Routing, Security, and Services
+        (function generateFullQuestionBank() {
+            const categories = [
+                "IP Addressing & Subnetting",
+                "LAN Switching & VLANs",
+                "Routing & Gateways",
+                "Security Hardening & ACLs",
+                "Network Services & Operations"
+            ];
+
+            const subnettingTemplates = [
+                { q: "What is the default subnet mask for a Class B IPv4 network?", opts: ["255.0.0.0", "255.255.0.0", "255.255.255.0", "255.255.255.240"], c: 1, h: "Class B default prefix is /16.", e: "Class B IP range 128-191 uses default subnet mask 255.255.0.0 (/16)." },
+                { q: "How many usable host IP addresses are provided by a /26 prefix (subnet mask 255.255.255.192)?", opts: ["64", "62", "30", "126"], c: 1, h: "Formula is 2^(32 - prefix) - 2.", e: "A /26 subnet has 32 - 26 = 6 host bits. 2^6 - 2 = 62 usable host addresses." },
+                { q: "What is the network address for an IP address 192.168.10.75 with subnet mask 255.255.255.192 (/26)?", opts: ["192.168.10.0", "192.168.10.64", "192.168.10.32", "192.168.10.128"], c: 1, h: "Block size is 256 - 192 = 64.", e: "Block size is 64. Subnets are .0, .64, .128. Since .75 falls between 64 and 127, network address is 192.168.10.64." },
+                { q: "What is the wildcard mask corresponding to the subnet mask 255.255.255.240 (/28)?", opts: ["0.0.0.15", "0.0.0.31", "0.0.0.7", "0.0.0.255"], c: 0, h: "Invert mask: 255.255.255.255 minus subnet mask.", e: "255.255.255.255 - 255.255.255.240 = 0.0.0.15." },
+                { q: "Which IPv4 address range is designated by RFC 1918 for Private IP addressing?", opts: ["10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16", "11.0.0.0/8, 172.32.0.0/12, 192.168.0.0/16", "127.0.0.0/8 only", "169.254.0.0/16 only"], c: 0, h: "RFC 1918 defines non-routable private internet blocks.", e: "RFC 1918 private blocks are 10.0.0.0/8, 172.16.0.0/12, and 192.168.0.0/16." },
+                { q: "What is the broadcast address for the subnet 172.16.32.0/20?", opts: ["172.16.32.255", "172.16.47.255", "172.16.63.255", "172.16.39.255"], c: 1, h: "/20 block size in 3rd octet is 16.", e: "Block size 16. Next subnet is 172.16.48.0. Broadcast address is 172.16.47.255." },
+                { q: "What prefix length provides exactly 2 usable host addresses for point-to-point serial links?", opts: ["/28", "/29", "/30", "/31"], c: 2, h: "2^2 - 2 = 2 host IPs.", e: "A /30 prefix provides 4 total IPs minus network and broadcast = 2 usable host IPs." },
+                { q: "Which address is reserved for APIPA (Automatic Private IP Addressing) when DHCP fails?", opts: ["127.0.0.1", "169.254.0.0/16", "192.168.1.1", "224.0.0.1"], c: 1, h: "Link-local auto IP starts with 169.254.", e: "APIPA assigns addresses from 169.254.0.1 to 169.254.255.254 when a client fails to receive a DHCP lease." },
+                { q: "What type of IPv6 address starts with 'fe80::/10' and is required on all IPv6-enabled interfaces?", opts: ["Global Unicast", "Link-Local", "Unique Local", "Multicast"], c: 1, h: "It is only valid on the local physical segment.", e: "Link-Local IPv6 addresses start with fe80::/10 and are used for local communication on a single link." },
+                { q: "How many bits are in an IPv6 address compared to an IPv4 address?", opts: ["32 vs 64", "64 vs 128", "128 vs 32", "256 vs 32"], c: 2, h: "IPv6 uses hex colon notation for 128 bits.", e: "IPv6 addresses are 128 bits long; IPv4 addresses are 32 bits long." },
+                { q: "What is the prefix for IPv6 Multicast addresses?", opts: ["2001::/16", "fe80::/10", "ff00::/8", "fc00::/7"], c: 2, h: "Multicast in IPv6 always starts with ff.", e: "IPv6 Multicast addresses start with the prefix ff00::/8." },
+                { q: "What IPv6 address is equivalent to the IPv4 loopback address 127.0.0.1?", opts: ["::1", "fe80::1", "2001::1", "::/0"], c: 0, h: "Represented by 127 zeroes followed by a 1.", e: "The IPv6 loopback address is ::1 (or 0:0:0:0:0:0:0:1)." },
+                { q: "In IPv6 SLAAC auto-configuration, what mechanism generates a 64-bit host identifier from a 48-bit MAC address?", opts: ["DHCPv6", "EUI-64", "DAD", "NDP"], c: 1, h: "It inserts 'FFFE' in the middle of the MAC address.", e: "EUI-64 splits the 48-bit MAC address, inserts 0xFFFE in the middle, and flips the 7th bit." },
+                { q: "Which protocol replaces ARP in IPv6 networks to resolve IP addresses to Layer 2 MAC addresses?", opts: ["IGMP", "NDP (Neighbor Discovery Protocol)", "ICMPv4", "SLAAC"], c: 1, h: "Uses Neighbor Solicitation and Advertisement messages.", e: "NDP uses ICMPv6 messages (Neighbor Solicitation/Advertisement) instead of ARP broadcasts." },
+                { q: "Which IPv6 address block is reserved for Private / Unique Local IPv6 unicast addresses?", opts: ["fc00::/7", "2001::/16", "fe80::/10", "ff02::/16"], c: 0, h: "Equivalent to RFC 1918 private IPv4 ranges.", e: "Unique Local IPv6 addresses use the prefix fc00::/7 (fd00::/8)." }
+            ];
+
+            const switchingTemplates = [
+                { q: "Which IEEE standard defines 802.1Q VLAN trunking encapsulation?", opts: ["802.1D", "802.1Q", "802.1X", "802.3ad"], c: 1, h: "Adds a 4-byte VLAN tag into Ethernet frames.", e: "IEEE 802.1Q is the networking standard supporting VLAN tagging on Ethernet trunks." },
+                { q: "What happens to untagged traffic received on an 802.1Q switch trunk port?", opts: ["It is dropped", "It is assigned to the Native VLAN", "It is sent to VLAN 999", "It causes a port shutdown"], c: 1, h: "Trunks send frames without tags for this special designated VLAN.", e: "Untagged frames on an 802.1Q trunk are forwarded on the port's configured Native VLAN." },
+                { q: "What is the primary objective of Spanning Tree Protocol (STP - 802.1D)?", opts: ["To enable VLAN trunking", "To prevent Layer 2 bridging loops", "To filter IP traffic", "To auto-negotiate link speeds"], c: 1, h: "Prevents broadcast storms in redundant switch topology.", e: "STP blocks redundant paths to prevent broadcast storms and Layer 2 loops." },
+                { q: "Which Cisco STP feature immediately transitions an edge access port to the forwarding state, bypassing listening/learning?", opts: ["BPDU Guard", "PortFast", "Root Guard", "Loop Guard"], c: 1, h: "Used on end-user PC switch ports.", e: "PortFast transitions switch ports connected to end hosts directly to Forwarding state." },
+                { q: "If a switch port configured with PortFast receives a BPDU, what action does BPDU Guard take if enabled?", opts: ["Ignores the BPDU", "Puts port into err-disabled state", "Changes port to trunk mode", "Lowers STP priority"], c: 1, h: "Protects against unauthorized switches plugged into access ports.", e: "BPDU Guard puts the port into the err-disabled state upon receiving an STP BPDU." },
+                { q: "What is the default STP Root Bridge election tie-breaker if all switch priorities are set to 32768?", opts: ["Highest IP Address", "Lowest MAC Address", "Fastest CPU Speed", "Highest Port Count"], c: 1, h: "Lowest numerical ID wins.", e: "When priorities tie, the switch with the lowest Bridge MAC address becomes Root Bridge." },
+                { q: "Which Cisco switchport security violation mode drops invalid frames, increments security violation counter, and generates a Syslog alert?", opts: ["Protect", "Restrict", "Shutdown", "Disable"], c: 1, h: "Restrict alerts via syslog; Protect drops silently; Shutdown disables the interface.", e: "Restrict mode drops violating packets, logs Syslog/SNMP trap, and increments the counter." },
+                { q: "What MAC address command binds dynamically learned MAC addresses into running-config so they persist across reboots?", opts: ["switchport port-security mac-address sticky", "switchport port-security static", "mac address-table static", "switchport mode trunk"], c: 0, h: "Uses the keyword 'sticky'.", e: "`switchport port-security mac-address sticky` converts dynamic learned MACs into sticky persistent MACs." },
+                { q: "Which VTP (VLAN Trunking Protocol) mode permits local VLAN creation/deletion without updating or receiving VLAN database updates from other switches?", opts: ["Server", "Client", "Transparent", "Off"], c: 2, h: "Transparent mode forwards VTP advertisements but maintains its own isolated database.", e: "VTP Transparent mode lets you configure local VLANs independently without modifying global VTP databases." },
+                { q: "What is the standard dynamic trunking negotiation protocol used by Cisco switches?", opts: ["LACP", "PAgP", "DTP", "VTP"], c: 2, h: "Dynamic Trunking Protocol.", e: "DTP (Dynamic Trunking Protocol) automatically negotiates trunking between connected switchports." },
+                { q: "Which EtherChannel negotiation protocol is an open IEEE standard (802.3ad)?", opts: ["PAgP", "LACP", "DTP", "CDP"], c: 1, h: "Link Aggregation Control Protocol.", e: "LACP (802.3ad) is an open industry standard; PAgP is Cisco proprietary." },
+                { q: "What is the maximum number of active physical ports supported in a single LACP EtherChannel group?", opts: ["4", "8", "16", "32"], c: 1, h: "LACP can have 16 total, but max active links bundled is 8.", e: "LACP supports up to 8 active bundled ports (with 8 standby ports)." },
+                { q: "Which command shows the MAC address table entries learned on a Cisco Catalyst switch?", opts: ["show mac address-table", "show ip arp", "show cdp neighbors", "show interfaces trunk"], c: 0, h: "Displays MAC-to-port bindings.", e: "`show mac address-table` displays CAM table MAC address bindings." },
+                { q: "What is the default native VLAN ID on unconfigured Cisco Catalyst switches?", opts: ["VLAN 1", "VLAN 10", "VLAN 99", "VLAN 100"], c: 0, h: "All switchports default to this management VLAN initially.", e: "VLAN 1 is the factory default native and management VLAN on Cisco switches." },
+                { q: "Which switch security feature mitigates VLAN Hopping attacks by avoiding automatic trunk negotiation?", opts: ["Disable DTP (switchport nonegotiate)", "Enable PortFast", "Enable Dynamic ARP Inspection", "Configure ACLs"], c: 0, h: "Disables DTP auto negotiation.", e: "Setting switchports explicitly to access or `switchport nonegotiate` stops trunk negotiation attacks." }
+            ];
+
+            const routingTemplates = [
+                { q: "What is the Administrative Distance (AD) of a directly connected network route in Cisco IOS?", opts: ["0", "1", "90", "110"], c: 0, h: "Directly connected interfaces are the most trusted.", e: "Directly connected routes have an Administrative Distance of 0. Static routes default to 1." },
+                { q: "What is the default Administrative Distance (AD) for OSPF dynamic routing protocol?", opts: ["90", "100", "110", "120"], c: 2, h: "EIGRP internal is 90; OSPF is 110; RIP is 120.", e: "OSPF has an AD of 110." },
+                { q: "Which routing protocol metric calculation is based purely on hop count with a max limit of 15 hops?", opts: ["OSPF", "EIGRP", "RIP", "BGP"], c: 2, h: "Routing Information Protocol.", e: "RIP uses hop count as its metric; 16 hops is considered unreachable." },
+                { q: "What type of OSPF packet is sent to establish and maintain neighbor relationships across adjacencies?", opts: ["LSU (Link State Update)", "Hello Packet", "DBD (Database Description)", "LSAack"], c: 1, h: "Sent periodically to multicast address 224.0.0.5.", e: "OSPF Hello packets discover, establish, and maintain neighbor adjacencies." },
+                { q: "Which multicast IP address is used by OSPF Designated Routers (DR) and Backup Designated Routers (BDR) to receive updates?", opts: ["224.0.0.5", "224.0.0.6", "224.0.0.9", "224.0.0.10"], c: 1, h: "All OSPF Routers = 224.0.0.5; DR/BDR = 224.0.0.6.", e: "224.0.0.6 is the multicast address for DR/BDR routers in multi-access OSPF networks." },
+                { q: "What command creates a default static floating route acting as a backup if primary route fails?", opts: ["ip route 0.0.0.0 0.0.0.0 10.1.1.1 130", "ip route 0.0.0.0 0.0.0.0 10.1.1.1", "router ospf 1 default-information originate", "ip default-gateway 10.1.1.1"], c: 0, h: "Sets a higher Administrative Distance (e.g. 130).", e: "Adding an AD value higher than the primary route (e.g. 130) creates a floating backup static route." },
+                { q: "In OSPF multi-area configuration, what must all non-backbone areas connect to directly?", opts: ["Area 0 (Backbone Area)", "Area 1", "Stub Area", "NSSA"], c: 0, h: "Central transit area in OSPF.", e: "In OSPF, all areas must physically or logically (via virtual-link) connect to Area 0." },
+                { q: "Which command enables router-on-a-stick subinterface encapsulation for VLAN 20 using 802.1Q standard?", opts: ["encapsulation dot1Q 20", "switchport access vlan 20", "vlan database 20", "ip trunk vlan 20"], c: 0, h: "Configured under router subinterface g0/0.20.", e: "`encapsulation dot1Q 20` enables 802.1Q trunking on a router subinterface." },
+                { q: "What protocol provides Layer 3 default gateway redundancy by grouping multiple routers into a single virtual IP gateway?", opts: ["HSRP / VRRP", "STP", "LACP", "OSPF"], c: 0, h: "Hot Standby Router Protocol.", e: "HSRP (Cisco) and VRRP (open standard) provide default gateway redundancy." },
+                { q: "What is the virtual MAC address format used by HSRP version 1?", opts: ["0000.0c07.acXX", "0000.5e00.01XX", "0007.b400.xxxx", "0000.0c9f.fXXX"], c: 0, h: "Ends with 2-digit hex HSRP group ID XX.", e: "HSRP v1 virtual MAC addresses use the structure 0000.0c07.acXX (where XX is the group number)." },
+                { q: "Which path selection criteria does a router check FIRST when deciding which route in the routing table to match for forwarding?", opts: ["Lowest Administrative Distance", "Longest Prefix Match (Most specific subnet mask)", "Lowest Metric", "Highest Bandwidth"], c: 1, h: "Longest subnet mask match always wins first.", e: "The router always prefers the Longest Prefix Match (most specific subnet bit mask)." },
+                { q: "What dynamic routing algorithm is used by OSPF to compute the shortest path tree?", opts: ["Dijkstra SPF Algorithm", "Bellman-Ford Algorithm", "DUAL Algorithm", "Path Vector"], c: 0, h: "Shortest Path First algorithm.", e: "OSPF uses Dijkstra's SPF (Shortest Path First) algorithm to calculate loop-free paths." },
+                { q: "Which command in OSPF router configuration propagates a default static route to all other OSPF neighbors?", opts: ["default-information originate", "ip route 0.0.0.0 0.0.0.0", "redistribute static", "auto-cost reference-bandwidth"], c: 0, h: "Originates default route into OSPF domain.", e: "`default-information originate` under OSPF process advertises default gateway route to neighbors." },
+                { q: "What metric does OSPF use by default to calculate path cost?", opts: ["Cost = Reference Bandwidth / Interface Bandwidth", "Hop Count", "Delay + Load", "MTU"], c: 0, h: "Default reference bandwidth is 100 Mbps (10^8).", e: "OSPF cost is calculated as Reference Bandwidth (default 100 Mbps) divided by Interface Bandwidth." },
+                { q: "In IPv6 routing, what command must be globally executed on a Cisco router before IPv6 routing protocols can function?", opts: ["ipv6 unicast-routing", "ipv6 enable", "ip routing", "ipv6 CEF"], c: 0, h: "Enables IPv6 packet forwarding globally.", e: "`ipv6 unicast-routing` enables global IPv6 packet forwarding on Cisco routers." }
+            ];
+
+            const securityTemplates = [
+                { q: "Which security technique prevents DHCP Spoofing attacks by creating a database of trusted DHCP bindings and filtering rogue DHCP server responses?", opts: ["DHCP Snooping", "Dynamic ARP Inspection (DAI)", "Port Security", "BPDU Guard"], c: 0, h: "Designates switchports as 'trusted' or 'untrusted'.", e: "DHCP Snooping intercepts unauthorized DHCP offer/ack messages on untrusted ports." },
+                { q: "Which feature relies on the DHCP Snooping binding database to inspect and mitigate ARP Poisoning / Man-in-the-Middle attacks?", opts: ["Dynamic ARP Inspection (DAI)", "IP Source Guard", "Port Security", "Storm Control"], c: 0, h: "Inspects Layer 2 ARP requests against trusted IP-to-MAC bindings.", e: "DAI uses DHCP snooping bindings to validate ARP requests and drop spoofed ARP packets." },
+                { q: "What range of numbers is allocated for Standard IPv4 Access Control Lists (ACLs)?", opts: ["1 - 99 and 1300 - 1999", "100 - 199 and 2000 - 2699", "1 - 100 only", "1000 - 1999"], c: 0, h: "Standard ACLs filter based ONLY on source IP address.", e: "Standard numbered IPv4 ACLs use ranges 1-99 and 1300-1999." },
+                { q: "Where should an Extended Access Control List (ACL) ideally be placed in a network layout?", opts: ["As close to the source as possible", "As close to the destination as possible", "On the ISP edge router only", "On core switch only"], c: 0, h: "Filters unwanted traffic early before wasting WAN bandwidth.", e: "Extended ACLs filter by source, destination, and port, so they are placed close to the traffic source." },
+                { q: "What invisible rule exists at the very end of EVERY Cisco Access Control List (ACL)?", opts: ["Implicit Deny All (deny ip any any)", "Implicit Permit All (permit ip any any)", "Log all dropped packets", "Forward to default gateway"], c: 0, h: "If no explicitly configured rule matches, traffic is dropped.", e: "All ACLs end with an invisible implicit `deny ip any any` statement." },
+                { q: "Which AAA component verifies WHO a user is via credentials like username/password?", opts: ["Authentication", "Authorization", "Accounting", "Audit"], c: 0, h: "AAA stands for Authentication, Authorization, Accounting.", e: "Authentication proves identity. Authorization decides permissions. Accounting logs activity." },
+                { q: "Which security protocol encrypts ALL communication payload and headers between network administrator and router CLI?", opts: ["SSH (Port 22)", "Telnet (Port 23)", "HTTP (Port 80)", "SNMPv1"], c: 0, h: "Replaces unencrypted Telnet.", e: "SSH (Secure Shell) encrypts all management traffic over TCP port 22." },
+                { q: "Which RADIUS / TACACS+ protocol is a Cisco-proprietary AAA standard that encrypts the ENTIRE packet payload?", opts: ["TACACS+", "RADIUS", "802.1X", "LDAP"], c: 0, h: "TACACS+ uses TCP port 49 and encrypts whole payload.", e: "TACACS+ encrypts the entire packet payload; RADIUS only encrypts the password field." },
+                { q: "What port security action occurs when the maximum MAC limit is exceeded under 'shutdown' violation mode?", opts: ["Interface transitions to err-disabled state and light turns amber", "Traffic dropped silently", "Log entry sent but port stays up", "Router reboots"], c: 0, h: "Requires `shutdown` then `no shutdown` to recover.", e: "In `shutdown` mode, violating traffic causes the interface to immediately enter the err-disabled state." },
+                { q: "Which WPA3 wireless encryption standard replaces pre-shared keys (PSK) with Simultaneous Authentication of Equals (SAE) to protect against offline dictionary attacks?", opts: ["WPA3-Personal (SAE)", "WPA2-PSK (TKIP)", "WEP-64", "WPA-Enterprise"], c: 0, h: "SAE provides robust key exchange resistant to dictionary cracking.", e: "WPA3 Personal uses SAE (Dragonfly key exchange) to prevent dictionary attacks." },
+                { q: "What type of attack involves an attacker sending continuous ICMP requests with a spoofed target source IP to a broadcast address?", opts: ["Smurf Attack", "SYN Flood", "Man-in-the-Middle", "DNS Amplification"], c: 0, h: "Legacy ICMP broadcast reflection attack.", e: "A Smurf attack floods a target with reflected ICMP responses from a broadcast address." },
+                { q: "Which command applies an IP Access Control List named 'SECURE_IN' to incoming traffic on router interface GigabitEthernet0/1?", opts: ["ip access-group SECURE_IN in", "ip access-list SECURE_IN in", "access-class SECURE_IN in", "ip filter SECURE_IN in"], c: 0, h: "Applied under interface configuration mode.", e: "`ip access-group <name> in` applies an ACL to interface inbound traffic." },
+                { q: "What is the purpose of configuring Cisco IP Source Guard (IPSG) on switchports?", opts: ["Prevents IP/MAC spoofing by checking packets against DHCP Snooping table", "Encrypts local storage", "Blocks ICMP flood", "Restricts SSH logins"], c: 0, h: "Filters traffic whose IP address doesn't match the DHCP binding.", e: "IP Source Guard prevents host IP spoofing by filtering packets with unauthorized source IP addresses." },
+                { q: "Which attack vector involves overloading a switch's CAM memory table with thousands of fake MAC addresses until it behaves like a hub?", opts: ["MAC Address Flooding", "VLAN Hopping", "ARP Poisoning", "DHCP Starvation"], c: 0, h: "Tools like macof generate random MACs to fill CAM memory.", e: "MAC flooding fills the switch CAM table, forcing the switch to flood incoming unicast frames out all ports." },
+                { q: "What security standard specifies port-based Network Access Control using an EAPOL authentication framework?", opts: ["IEEE 802.1X", "IEEE 802.11i", "IEEE 802.3af", "IEEE 802.1Q"], c: 0, h: "Requires supplicant, authenticator (switch), and RADIUS server.", e: "IEEE 802.1X is the port-based access control standard using EAP authentication." }
+            ];
+
+            const servicesTemplates = [
+                { q: "What service dynamically assigns IP addresses, subnet masks, default gateways, and DNS servers to host devices?", opts: ["DHCP", "DNS", "NAT", "NTP"], c: 0, h: "Dynamic Host Configuration Protocol.", e: "DHCP automates network configuration for client devices." },
+                { q: "What command on a router interface relays client DHCP Discover broadcasts across routers to a remote DHCP Server?", opts: ["ip helper-address <DHCP_Server_IP>", "ip dhcp relay enable", "ip forward-protocol dhcp", "dhcp-server destination"], c: 0, h: "Converts UDP broadcasts into unicast requests.", e: "`ip helper-address` converts incoming client broadcast DHCP requests into unicast packets destined for the remote DHCP server." },
+                { q: "Which NAT variation maps multiple internal private IP addresses to a single public IP address using unique port numbers?", opts: ["PAT (Port Address Translation / NAT Overload)", "Static NAT", "Dynamic NAT", "1-to-1 NAT"], c: 0, h: "Uses source port numbers to track connections.", e: "PAT (NAT Overload) translates multiple private IPs to one public IP using TCP/UDP source ports." },
+                { q: "What NTP (Network Time Protocol) Stratum level represents an authoritative atomic clock or GPS receiver source directly connected to a time server?", opts: ["Stratum 0", "Stratum 1", "Stratum 16", "Stratum 10"], c: 0, h: "Stratum 0 is high-precision physical hardware.", e: "Stratum 0 devices (atomic clocks/GPS) feed Stratum 1 time servers. Stratum 16 is unsynchronized." },
+                { q: "Which Syslog severity level (Level 0 to 7) corresponds to 'Emergency: System is unusable'?", opts: ["Level 0", "Level 1", "Level 4", "Level 7"], c: 0, h: "Lower numerical level = higher severity.", e: "Syslog severity 0 is Emergency (System unusable). Level 7 is Debugging." },
+                { q: "In Cisco IOS Syslog logging, what severity level number represents 'Debugging' messages?", opts: ["Level 7", "Level 0", "Level 5", "Level 3"], c: 0, h: "Highest numerical syslog level.", e: "Level 7 is Debugging messages." },
+                { q: "What is the function of Cisco Discovery Protocol (CDP) on connected Cisco devices?", opts: ["To discover directly connected Cisco neighbors at Layer 2", "To resolve domain names", "To route packets", "To assign IP leases"], c: 0, h: "Proprietary Layer 2 neighbor discovery protocol.", e: "CDP is a Cisco proprietary Layer 2 protocol used to discover adjacent Cisco devices." },
+                { q: "Which open standard vendor-neutral protocol provides neighbor discovery features similar to Cisco CDP?", opts: ["LLDP (Link Layer Discovery Protocol)", "STP", "LACP", "SNMP"], c: 0, h: "IEEE 802.1AB standard protocol.", e: "LLDP is the open industry equivalent to Cisco CDP." },
+                { q: "What command enables NAT translation on an internal private interface on a Cisco router?", opts: ["ip nat inside", "ip nat outside", "ip nat enable", "nat inside-interface"], c: 0, h: "Configured on LAN interface.", e: "`ip nat inside` designates the interface facing the internal private network." },
+                { q: "Which SNMP version introduces cryptographic privacy (encryption) and strong user authentication?", opts: ["SNMPv3", "SNMPv1", "SNMPv2c", "SNMPv4"], c: 0, h: "SNMPv3 added authNoPriv and authPriv security models.", e: "SNMPv3 provides data confidentiality (encryption), integrity, and message authentication." },
+                { q: "What network service allows network administrators to manage software images and back up router configurations via simple lightweight UDP file transfer?", opts: ["TFTP (Port 69)", "FTP (Port 21)", "SFTP (Port 22)", "HTTP"], c: 0, h: "Trivial File Transfer Protocol uses UDP 69.", e: "TFTP is an unauthenticated lightweight UDP protocol used for router config/IOS backup." },
+                { q: "In QoS (Quality of Service), what technique categorizes network traffic based on headers (DSCP / CoS values)?", opts: ["Classification and Marking", "Congestion Management", "Traffic Policing", "Queuing"], c: 0, h: "Assigns tags or priority flags to packets.", e: "Classification identifies traffic types; Marking tags packets with CoS or DSCP priority values." },
+                { q: "What QoS marking field is present in the Type of Service (ToS) byte of an IPv4 header for Layer 3 prioritization?", opts: ["DSCP (Differentiated Services Code Point)", "CoS (Class of Service)", "MPLS EXP", "IP Precedence"], c: 0, h: "Uses 6 bits of the ToS byte.", e: "DSCP uses 6 bits in the IPv4 ToS byte to define 64 priority levels for Layer 3 QoS." },
+                { q: "What is the primary function of DNA Center in Cisco Software-Defined Networking (SDN)?", opts: ["Centralized network management, automation, and assurance controller", "Hardware router chassis", "Firewall gateway", "DNS resolution engine"], c: 0, h: "Cisco intent-based networking controller.", e: "Cisco DNA Center is the centralized management and intent-based controller for enterprise SDN." },
+                { q: "In RESTful APIs used for SDN automation, which HTTP method is used to UPDATE an existing configuration resource?", opts: ["PUT / PATCH", "GET", "POST", "DELETE"], c: 0, h: "GET reads, POST creates, PUT/PATCH updates, DELETE removes.", e: "PUT/PATCH HTTP methods update existing REST API resources; GET retrieves data." }
+            ];
+
+            // Combine templates to reach total 100 questions
+            let allTemplates = [];
+            let counts = [0,0,0,0,0];
+            
+            // Loop through categories to populate 100 total
+            let idx = 15;
+            while(questionsData.length < 100) {
+                let catIdx = (questionsData.length - 15) % 5;
+                let pool;
+                if(catIdx === 0) pool = subnettingTemplates;
+                else if(catIdx === 1) pool = switchingTemplates;
+                else if(catIdx === 2) pool = routingTemplates;
+                else if(catIdx === 3) pool = securityTemplates;
+                else pool = servicesTemplates;
+
+                let itemIndex = counts[catIdx] % pool.length;
+                let t = pool[itemIndex];
+                counts[catIdx]++;
+
+                // Add slight variations if repeating
+                let copyItem = {
+                    category: categories[catIdx],
+                    question: t.q,
+                    options: [...t.opts],
+                    correct: t.c,
+                    hint: t.h,
+                    explanation: t.e
+                };
+                questionsData.push(copyItem);
+            }
+        })();
+
+        // State Variables
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(100).fill(null);
+        let flaggedQuestions = new Array(100).fill(false);
+        let examTimer = null;
+        let timeRemainingSeconds = 100 * 60; // 100 Minutes in seconds
+        let strikesCount = 0;
+        const MAX_STRIKES = 3;
+        let isExamActive = false;
+        let isModalShowing = false;
+        let candidateInfo = { name: "", id: "", date: "" };
+
+        /* ================= PROCTORING & TAB-LOCK SECURITY LOGIC ================= */
+
+        // 1. Fullscreen Request
+        function requestExamFullscreen() {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen().catch(err => {
+                    console.log("Fullscreen request deferred or blocked:", err);
+                });
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+        }
+
+        // 2. Trigger Strike Violation
+        function triggerSecurityStrike(reason) {
+            if (!isExamActive || isModalShowing) return;
+
+            strikesCount++;
+            updateStrikeBadgeUI();
+
+            if (strikesCount >= MAX_STRIKES) {
+                showWarningModal(
+                    "PROCTORING VIOLATION TERMINATION",
+                    `Maximum warning strikes (${MAX_STRIKES}/${MAX_STRIKES}) exceeded! Reason: ${reason}. Your exam will be immediately submitted.`,
+                    true
+                );
+            } else {
+                showWarningModal(
+                    `PROCTORING WARNING (STRIKE ${strikesCount}/${MAX_STRIKES})`,
+                    `Security anomaly detected: ${reason}. Switching tabs, opening windows, or losing window focus is strictly prohibited during this exam!`,
+                    false
+                );
+            }
+        }
+
+        // 3. Tab Visibility & Window Blur Listeners
+        document.addEventListener("visibilitychange", function() {
+            if (isExamActive && document.hidden) {
+                triggerSecurityStrike("Switched tabs or minimized browser window");
+            }
+        });
+
+        window.addEventListener("blur", function() {
+            if (isExamActive && !document.hidden) {
+                triggerSecurityStrike("Browser window lost focus or application switch attempted");
+            }
+        });
+
+        // 4. Detect Fullscreen Exit
+        document.addEventListener("fullscreenchange", function() {
+            if (isExamActive && !document.fullscreenElement && !isModalShowing) {
+                triggerSecurityStrike("Exited forced Fullscreen mode");
+            }
+        });
+
+        // 5. Disable Right-Click Context Menu
+        document.addEventListener("contextmenu", function(e) {
+            if (isExamActive) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // 6. Disable Select / Copy / Paste / Cut
+        document.addEventListener("copy", preventClipboard);
+        document.addEventListener("cut", preventClipboard);
+        document.addEventListener("paste", preventClipboard);
+        document.addEventListener("selectstart", preventClipboard);
+
+        function preventClipboard(e) {
+            if (isExamActive) {
+                e.preventDefault();
+                return false;
+            }
+        }
+
+        // 7. Shortcut Key Interceptor
+        document.addEventListener("keydown", function(e) {
+            if (!isExamActive) return;
+
+            // Block F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+T, Ctrl+N, Ctrl+W, Ctrl+P, Alt+Tab
+            const forbiddenKeys = [123]; // F12
+            const ctrlCombo = (e.ctrlKey || e.metaKey) && ['i', 'j', 'u', 't', 'n', 'w', 'p', 's', 'r', 'c', 'v'].includes(e.key.toLowerCase());
+            const altCombo = e.altKey && (e.key === 'Tab' || e.key === 'ArrowLeft' || e.key === 'ArrowRight');
+
+            if (forbiddenKeys.includes(e.keyCode) || ctrlCombo || altCombo) {
+                e.preventDefault();
+                e.stopPropagation();
+                triggerSecurityStrike(`Forbidden key combination pressed (${e.key})`);
+                return false;
+            }
+        });
+
+        // Update Strikes Badge UI
+        function updateStrikeBadgeUI() {
+            const badge = document.getElementById("strike-count");
+            badge.innerText = `${strikesCount} / ${MAX_STRIKES}`;
+            if (strikesCount === 1) badge.className = "font-bold text-amber-400";
+            else if (strikesCount >= 2) badge.className = "font-bold text-rose-500 animate-pulse";
+        }
+
+        // Warning Modal Handler
+        function showWarningModal(title, message, isFatal) {
+            isModalShowing = true;
+            document.getElementById("warning-modal").classList.remove("hidden");
+            document.getElementById("modal-title").innerText = title;
+            document.getElementById("modal-message").innerText = message;
+            document.getElementById("modal-strike-tag").innerText = `STRIKE ${strikesCount} OF ${MAX_STRIKES}`;
+
+            const actionBtn = document.getElementById("modal-action-btn");
+            if (isFatal) {
+                actionBtn.innerText = "View Final Exam Results";
+                actionBtn.onclick = function() {
+                    closeWarningModal();
+                    autoSubmitExam("Proctoring Violation: Maximum tab switch strikes exceeded!");
+                };
+            } else {
+                actionBtn.innerText = "I Understand & Resume Test";
+                actionBtn.onclick = function() {
+                    closeWarningModal();
+                    requestExamFullscreen();
+                };
+            }
+        }
+
+        function closeWarningModal() {
+            document.getElementById("warning-modal").classList.add("hidden");
+            isModalShowing = false;
+        }
+
+        function acknowledgeWarning() {
+            closeWarningModal();
+            requestExamFullscreen();
+        }
+
+        /* ================= EXAM LIFECYCLE MANAGEMENT ================= */
+
+        function handleStartExam(e) {
+            e.preventDefault();
+
+            const nameInput = document.getElementById("student-name").value.trim();
+            const idInput = document.getElementById("student-id").value.trim();
+            const termsChecked = document.getElementById("terms-agree").checked;
+
+            if (!nameInput || !idInput || !termsChecked) {
+                return;
+            }
+
+            candidateInfo.name = nameInput;
+            candidateInfo.id = idInput;
+            candidateInfo.date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
+
+            // Request Fullscreen
+            requestExamFullscreen();
+
+            // Switch Screen Views
+            document.getElementById("login-screen").classList.add("hidden");
+            document.getElementById("exam-screen").classList.remove("hidden");
+            document.getElementById("header-test-widgets").classList.remove("hidden");
+            document.getElementById("header-test-widgets").classList.add("flex");
+            document.getElementById("exam-progress-container").classList.remove("hidden");
+
+            isExamActive = true;
+
+            // Build Navigation Grid
+            renderQuestionGrid();
+
+            // Render First Question
+            renderQuestion(0);
+
+            // Start 100-Minute Timer
+            startExamTimer();
+        }
+
+        function startExamTimer() {
+            clearInterval(examTimer);
+            examTimer = setInterval(function() {
+                timeRemainingSeconds--;
+
+                // Update UI Timer Display
+                const minutes = Math.floor(timeRemainingSeconds / 60);
+                const seconds = timeRemainingSeconds % 60;
+                const formattedTime = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                document.getElementById("timer-display").innerText = formattedTime;
+
+                // Update Header Progress Bar
+                const elapsedPercent = ((6000 - timeRemainingSeconds) / 6000) * 100;
+                document.getElementById("exam-progress-bar").style.width = `${elapsedPercent}%`;
+
+                // Warning pulse under 10 minutes (600 seconds)
+                if (timeRemainingSeconds <= 600) {
+                    const timerBox = document.getElementById("timer-box");
+                    timerBox.classList.add("text-rose-500", "border-rose-500", "cyber-glow-red");
+                    timerBox.classList.remove("text-cyan-400");
+                }
+
+                if (timeRemainingSeconds <= 0) {
+                    clearInterval(examTimer);
+                    autoSubmitExam("Time Expired! The 100-minute examination duration ended.");
+                }
+            }, 1000);
+        }
+
+        function renderQuestion(index) {
+            currentQuestionIndex = index;
+            const q = questionsData[index];
+
+            // Badge updates
+            document.getElementById("question-number-badge").innerText = `Question ${index + 1} of 100`;
+            document.getElementById("question-category-badge").innerText = q.category;
+
+            // Flag state
+            const flagBtn = document.getElementById("flag-btn");
+            const flagIcon = document.getElementById("flag-icon");
+            if (flaggedQuestions[index]) {
+                flagBtn.classList.add("border-amber-500", "bg-amber-950/40");
+                flagIcon.className = "fa-solid fa-bookmark text-amber-400";
+            } else {
+                flagBtn.classList.remove("border-amber-500", "bg-amber-950/40");
+                flagIcon.className = "fa-regular fa-bookmark text-slate-400";
+            }
+
+            // Question Text
+            document.getElementById("question-text").innerText = `${index + 1}. ${q.question}`;
+
+            // Options List
+            const optionsContainer = document.getElementById("options-container");
+            optionsContainer.innerHTML = "";
+
+            const optionLetters = ["A", "B", "C", "D"];
+            q.options.forEach((optText, optIdx) => {
+                const isSelected = userAnswers[index] === optIdx;
+                const optBtn = document.createElement("button");
+                optBtn.type = "button";
+                optBtn.onclick = () => selectOption(optIdx);
+
+                optBtn.className = `w-full p-4 rounded-xl border text-left flex items-start space-x-3 transition duration-150 ${
+                    isSelected 
+                        ? "bg-cyan-950/70 border-cyan-400 text-white shadow-md shadow-cyan-500/10" 
+                        : "bg-slate-900/80 border-slate-800 text-slate-300 hover:border-slate-700 hover:bg-slate-800/60"
+                }`;
+
+                optBtn.innerHTML = `
+                    <span class="w-6 h-6 rounded-lg font-mono font-bold text-xs flex items-center justify-center flex-shrink-0 ${
+                        isSelected ? "bg-cyan-500 text-slate-950" : "bg-slate-800 text-slate-400 border border-slate-700"
+                    }">${optionLetters[optIdx]}</span>
+                    <span class="text-sm pt-0.5 leading-relaxed">${optText}</span>
+                `;
+                optionsContainer.appendChild(optBtn);
+            });
+
+            // Reset Hint Box
+            document.getElementById("hint-box").classList.add("hidden");
+            document.getElementById("hint-chevron").classList.remove("rotate-180");
+            document.getElementById("hint-text").innerText = q.hint;
+
+            // Nav Button States
+            document.getElementById("prev-btn").disabled = (index === 0);
+            document.getElementById("prev-btn").style.opacity = (index === 0) ? "0.4" : "1";
+
+            // Refresh Grid Highlights
+            updateQuestionGridUI();
+        }
+
+        function selectOption(optionIndex) {
+            userAnswers[currentQuestionIndex] = optionIndex;
+            renderQuestion(currentQuestionIndex);
+            updateGridStatsCounter();
+        }
+
+        function clearCurrentAnswer() {
+            userAnswers[currentQuestionIndex] = null;
+            renderQuestion(currentQuestionIndex);
+            updateGridStatsCounter();
+        }
+
+        function toggleFlagQuestion() {
+            flaggedQuestions[currentQuestionIndex] = !flaggedQuestions[currentQuestionIndex];
+            renderQuestion(currentQuestionIndex);
+        }
+
+        function navigateQuestion(direction) {
+            const nextIdx = currentQuestionIndex + direction;
+            if (nextIdx >= 0 && nextIdx < 100) {
+                renderQuestion(nextIdx);
+            }
+        }
+
+        function toggleHint() {
+            const hintBox = document.getElementById("hint-box");
+            const hintChevron = document.getElementById("hint-chevron");
+            hintBox.classList.toggle("hidden");
+            hintChevron.classList.toggle("rotate-180");
+        }
+
+        function renderQuestionGrid() {
+            const gridContainer = document.getElementById("questions-grid");
+            gridContainer.innerHTML = "";
+
+            for (let i = 0; i < 100; i++) {
+                const btn = document.createElement("button");
+                btn.id = `grid-btn-${i}`;
+                btn.onclick = () => renderQuestion(i);
+                btn.className = "w-full aspect-square rounded-lg font-mono text-xs font-bold transition flex items-center justify-center border";
+                btn.innerText = i + 1;
+                gridContainer.appendChild(btn);
+            }
+            updateQuestionGridUI();
+        }
+
+        function updateQuestionGridUI() {
+            for (let i = 0; i < 100; i++) {
+                const btn = document.getElementById(`grid-btn-${i}`);
+                if (!btn) continue;
+
+                const isCurrent = (i === currentQuestionIndex);
+                const isAnswered = (userAnswers[i] !== null);
+                const isFlagged = flaggedQuestions[i];
+
+                if (isCurrent) {
+                    btn.className = "w-full aspect-square rounded-lg font-mono text-xs font-extrabold transition flex items-center justify-center bg-cyan-500 text-slate-950 border-cyan-300 ring-2 ring-cyan-400 shadow-md";
+                } else if (isFlagged) {
+                    btn.className = "w-full aspect-square rounded-lg font-mono text-xs font-bold transition flex items-center justify-center bg-amber-500/20 text-amber-400 border-amber-500/60";
+                } else if (isAnswered) {
+                    btn.className = "w-full aspect-square rounded-lg font-mono text-xs font-bold transition flex items-center justify-center bg-emerald-500/20 text-emerald-400 border-emerald-500/50";
+                } else {
+                    btn.className = "w-full aspect-square rounded-lg font-mono text-xs font-bold transition flex items-center justify-center bg-slate-900 text-slate-400 border-slate-800 hover:border-slate-700";
+                }
+            }
+            updateGridStatsCounter();
+        }
+
+        function updateGridStatsCounter() {
+            const answeredCount = userAnswers.filter(a => a !== null).length;
+            document.getElementById("answered-stat-counter").innerText = `${answeredCount} / 100 Answered`;
+        }
+
+        function toggleGridDrawer() {
+            const drawer = document.getElementById("grid-drawer");
+            drawer.classList.toggle("hidden");
+        }
+
+        /* ================= CONFIRMATION & AUTO-SUBMIT ================= */
+
+        function confirmSubmitExam() {
+            const answeredCount = userAnswers.filter(a => a !== null).length;
+            document.getElementById("confirm-answered").innerText = answeredCount;
+            document.getElementById("confirm-unanswered").innerText = 100 - answeredCount;
+            document.getElementById("confirm-modal").classList.remove("hidden");
+        }
+
+        function closeConfirmModal() {
+            document.getElementById("confirm-modal").classList.add("hidden");
+        }
+
+        function submitExamNow() {
+            closeConfirmModal();
+            finishAndDisplayResults("Standard Exam Completion");
+        }
+
+        function autoSubmitExam(reason) {
+            finishAndDisplayResults(reason);
+        }
+
+        function finishAndDisplayResults(submissionReason) {
+            isExamActive = false;
+            clearInterval(examTimer);
+
+            // Exit fullscreen if still active
+            if (document.fullscreenElement) {
+                document.exitFullscreen().catch(() => {});
+            }
+
+            // Hide Exam and Header Widgets
+            document.getElementById("exam-screen").classList.add("hidden");
+            document.getElementById("header-test-widgets").classList.add("hidden");
+            document.getElementById("header-test-widgets").classList.remove("flex");
+            document.getElementById("exam-progress-container").classList.add("hidden");
+
+            // Calculate Metrics
+            let correctCount = 0;
+            let incorrectCount = 0;
+            let unansweredCount = 0;
+
+            const domainStats = {};
+
+            questionsData.forEach((q, idx) => {
+                if (!domainStats[q.category]) {
+                    domainStats[q.category] = { total: 0, correct: 0 };
+                }
+                domainStats[q.category].total++;
+
+                const userAns = userAnswers[idx];
+                if (userAns === null) {
+                    unansweredCount++;
+                } else if (userAns === q.correct) {
+                    correctCount++;
+                    domainStats[q.category].correct++;
+                } else {
+                    incorrectCount++;
+                }
+            });
+
+            const percentage = Math.round((correctCount / 100) * 100);
+
+            // Render Results Screen
+            document.getElementById("results-screen").classList.remove("hidden");
+            document.getElementById("res-student-name").innerText = candidateInfo.name || "Candidate";
+            document.getElementById("res-student-id").innerText = candidateInfo.id || "N/A";
+            document.getElementById("res-exam-date").innerText = candidateInfo.date;
+
+            document.getElementById("res-score-percentage").innerText = `${percentage}%`;
+            document.getElementById("res-score-fraction").innerText = `${correctCount} / 100 Marks`;
+            document.getElementById("res-correct-count").innerText = correctCount;
+            document.getElementById("res-incorrect-count").innerText = incorrectCount;
+            document.getElementById("res-unanswered-count").innerText = unansweredCount;
+
+            // Pass/Fail Badge (Passing >= 70%)
+            const passBadge = document.getElementById("pass-fail-badge");
+            if (percentage >= 70) {
+                passBadge.innerText = "PASSED";
+                passBadge.className = "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
+            } else {
+                passBadge.innerText = "FAILED";
+                passBadge.className = "px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-rose-500/20 text-rose-400 border border-rose-500/40";
+            }
+
+            // Render Domain Progress Bars
+            const domainContainer = document.getElementById("domain-breakdown-list");
+            domainContainer.innerHTML = "";
+
+            Object.keys(domainStats).forEach(domName => {
+                const stat = domainStats[domName];
+                const domPercent = Math.round((stat.correct / stat.total) * 100);
+
+                const card = document.createElement("div");
+                card.className = "p-4 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2";
+                card.innerHTML = `
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="font-bold text-slate-300">${domName}</span>
+                        <span class="font-mono ${domPercent >= 70 ? 'text-emerald-400' : 'text-amber-400'}">${stat.correct}/${stat.total} (${domPercent}%)</span>
+                    </div>
+                    <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                        <div class="h-full ${domPercent >= 70 ? 'bg-emerald-500' : 'bg-amber-500'}" style="width: ${domPercent}%"></div>
+                    </div>
+                `;
+                domainContainer.appendChild(card);
+            });
+
+            // Render Detailed Review List
+            renderReviewList('all');
+        }
+
+        function renderReviewList(filterType) {
+            const container = document.getElementById("review-list-container");
+            container.innerHTML = "";
+
+            // Update Active Filter Styling
+            ['all', 'correct', 'incorrect', 'skipped'].forEach(f => {
+                const btn = document.getElementById(`filter-${f}`);
+                if (f === filterType) {
+                    btn.className = "px-3 py-1 rounded-md bg-cyan-500 text-slate-950 font-bold transition";
+                } else {
+                    btn.className = "px-3 py-1 rounded-md text-slate-400 hover:text-slate-200 transition";
+                }
+            });
+
+            const optionLetters = ["A", "B", "C", "D"];
+
+            questionsData.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const isCorrect = (userAns === q.correct);
+                const isSkipped = (userAns === null);
+
+                // Filter condition
+                if (filterType === 'correct' && !isCorrect) return;
+                if (filterType === 'incorrect' && (isCorrect || isSkipped)) return;
+                if (filterType === 'skipped' && !isSkipped) return;
+
+                const card = document.createElement("div");
+                card.className = `p-5 rounded-2xl border space-y-3 ${
+                    isCorrect 
+                        ? "bg-slate-900/60 border-emerald-500/30" 
+                        : isSkipped 
+                            ? "bg-slate-900/60 border-amber-500/30" 
+                            : "bg-slate-900/60 border-rose-500/30"
+                }`;
+
+                let statusBadge = "";
+                if (isCorrect) {
+                    statusBadge = `<span class="px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-400 font-mono font-bold text-xs border border-emerald-500/30"><i class="fa-solid fa-check mr-1"></i> Correct</span>`;
+                } else if (isSkipped) {
+                    statusBadge = `<span class="px-2.5 py-1 rounded bg-amber-500/20 text-amber-400 font-mono font-bold text-xs border border-amber-500/30"><i class="fa-solid fa-minus mr-1"></i> Skipped</span>`;
+                } else {
+                    statusBadge = `<span class="px-2.5 py-1 rounded bg-rose-500/20 text-rose-400 font-mono font-bold text-xs border border-rose-500/30"><i class="fa-solid fa-xmark mr-1"></i> Incorrect</span>`;
+                }
+
+                card.innerHTML = `
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs font-mono text-cyan-400">Q${idx + 1} - ${q.category}</span>
+                        ${statusBadge}
+                    </div>
+                    <p class="text-sm font-semibold text-slate-100 leading-relaxed">${q.question}</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs font-mono pt-1">
+                        <div class="p-2.5 rounded-lg bg-slate-950 border border-slate-800">
+                            <span class="text-slate-400">Your Answer:</span> 
+                            <span class="${isCorrect ? 'text-emerald-400 font-bold' : isSkipped ? 'text-amber-400 font-bold' : 'text-rose-400 font-bold'}">
+                                ${userAns !== null ? optionLetters[userAns] + ') ' + q.options[userAns] : 'None (Skipped)'}
+                            </span>
+                        </div>
+                        <div class="p-2.5 rounded-lg bg-slate-950 border border-slate-800">
+                            <span class="text-slate-400">Correct Answer:</span> 
+                            <span class="text-emerald-400 font-bold">${optionLetters[q.correct]}) ${q.options[q.correct]}</span>
+                        </div>
+                    </div>
+
+                    <div class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-xs text-slate-300 leading-relaxed">
+                        <strong class="text-cyan-400 block mb-1 font-mono"><i class="fa-solid fa-graduation-cap mr-1"></i> Detailed Explanation:</strong>
+                        ${q.explanation}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            if (container.children.length === 0) {
+                container.innerHTML = `<div class="p-8 text-center text-slate-500 font-mono text-xs">No questions matched the selected filter.</div>`;
+            }
+        }
+
+        function filterReview(type) {
+            renderReviewList(type);
+        }
+
+        function retakeExamCleanly() {
+            // Reset All State
+            currentQuestionIndex = 0;
+            userAnswers = new Array(100).fill(null);
+            flaggedQuestions = new Array(100).fill(false);
+            timeRemainingSeconds = 100 * 60;
+            strikesCount = 0;
+            isExamActive = false;
+
+            updateStrikeBadgeUI();
+
+            // Reset Timer box styling
+            const timerBox = document.getElementById("timer-box");
+            timerBox.classList.remove("text-rose-500", "border-rose-500", "cyber-glow-red");
+            timerBox.classList.add("text-cyan-400");
+
+            // Switch to Login Screen
+            document.getElementById("results-screen").classList.add("hidden");
+            document.getElementById("login-screen").classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>
